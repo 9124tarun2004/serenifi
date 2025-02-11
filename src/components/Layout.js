@@ -60,6 +60,7 @@ const Layout = ({ children }) => {
 
   const navItems = [
     { icon: '🏠', text: 'Home', path: '/dashboard' },
+    { icon: '📔', text: 'Chatbot', path: '/chatbot' },
     { icon: '📔', text: 'Journal', path: '/journal' },
     { icon: '💡', text: 'Tips', path: '/tips' },
     { icon: '📊', text: 'Analytics', path: '/analytics' },
