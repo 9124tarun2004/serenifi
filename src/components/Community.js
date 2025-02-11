@@ -1,61 +1,147 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { theme } from '../theme/colors';
 
 const Container = styled.div`
-  padding: 2rem;
+  padding: ${theme.spacing.xxl};
   max-width: 1200px;
   margin: 0 auto;
+  background-color: ${theme.colors.background};
+  min-height: 100vh;
 `;
 
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: ${theme.spacing.xl};
+  padding-bottom: ${theme.spacing.lg};
+  border-bottom: 2px solid ${theme.colors.border.light};
+
+  h1 {
+    font-size: 2rem;
+    color: ${theme.colors.text.primary};
+    font-weight: 600;
+    position: relative;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: ${theme.gradients.primary};
+      border-radius: ${theme.radius.full};
+    }
+  }
 `;
 
 const CreatePostButton = styled.button`
-  background: #FF69B4;
+  background: ${theme.gradients.primary};
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 20px;
+  padding: ${theme.spacing.md} ${theme.spacing.xl};
+  border-radius: ${theme.radius.full};
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  
+  gap: ${theme.spacing.sm};
+  transition: ${theme.transitions.bounce};
+  box-shadow: ${theme.shadows.md};
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: ${theme.gradients.secondary};
+    opacity: 0;
+    transition: ${theme.transitions.default};
+  }
+
   &:hover {
-    background: #FF1493;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: ${theme.shadows.hover};
+
+    &:before {
+      opacity: 1;
+    }
+  }
+
+  span {
+    font-size: 1.2rem;
+    position: relative;
+    z-index: 1;
   }
 `;
 
 const CommunitiesSection = styled.div`
-  background: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: ${theme.spacing.xl};
+
+  h2 {
+    color: ${theme.colors.text.primary};
+    margin-bottom: ${theme.spacing.md};
+    font-size: 1.5rem;
+  }
 `;
 
 const CommunityCard = styled.div`
   display: flex;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #edf2f7;
-  
-  &:last-child {
-    border-bottom: none;
+  padding: ${theme.spacing.xl};
+  background: ${theme.gradients.surface};
+  border-radius: ${theme.radius.lg};
+  margin-bottom: ${theme.spacing.lg};
+  box-shadow: ${theme.shadows.sm};
+  transition: ${theme.transitions.default};
+  border: 1px solid ${theme.colors.border.light};
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: ${theme.gradients.primary};
+    opacity: 0;
+    transition: ${theme.transitions.default};
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${theme.shadows.lg};
+    border-color: ${theme.colors.border.hover};
+
+    &:before {
+      opacity: 1;
+    }
   }
 `;
 
 const CommunityIcon = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
-  margin-right: 1rem;
+  width: 70px;
+  height: 70px;
+  border-radius: ${theme.radius.lg};
+  margin-right: ${theme.spacing.xl};
+  object-fit: cover;
+  box-shadow: ${theme.shadows.sm};
+  border: 2px solid ${theme.colors.border.light};
+  transition: ${theme.transitions.default};
+
+  ${CommunityCard}:hover & {
+    border-color: ${theme.colors.border.hover};
+    transform: scale(1.05);
+  }
 `;
 
 const CommunityInfo = styled.div`
@@ -63,165 +149,296 @@ const CommunityInfo = styled.div`
 `;
 
 const CommunityName = styled.h3`
-  margin: 0;
-  color: #2d3748;
-  font-size: 1rem;
+  color: ${theme.colors.text.primary};
+  margin-bottom: ${theme.spacing.sm};
+  font-size: 1.2rem;
 `;
 
 const CommunityDescription = styled.p`
-  margin: 0.25rem 0 0;
-  color: #718096;
-  font-size: 0.875rem;
+  color: ${theme.colors.text.secondary};
+  margin-bottom: ${theme.spacing.sm};
+  font-size: 0.95rem;
 `;
 
 const JoinButton = styled.button`
-  background: ${props => props.joined ? '#E2E8F0' : '#FF69B4'};
-  color: ${props => props.joined ? '#4A5568' : 'white'};
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 15px;
+  background: ${props => props.joined ? theme.colors.primaryLighter : theme.gradients.primary};
+  color: ${props => props.joined ? theme.colors.primary : 'white'};
+  border: ${props => props.joined ? `2px solid ${theme.colors.primary}` : 'none'};
+  padding: ${theme.spacing.md} ${theme.spacing.xl};
+  border-radius: ${theme.radius.full};
   cursor: pointer;
-  font-weight: 500;
-  
+  font-weight: 600;
+  transition: ${theme.transitions.bounce};
+  box-shadow: ${props => props.joined ? 'none' : theme.shadows.md};
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: ${props => props.joined ? 'none' : theme.gradients.secondary};
+    opacity: 0;
+    transition: ${theme.transitions.default};
+  }
+
   &:hover {
-    background: ${props => props.joined ? '#CBD5E0' : '#FF1493'};
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: ${theme.shadows.hover};
+    background: ${props => props.joined ? theme.colors.primaryLighter : 'none'};
+
+    &:before {
+      opacity: 1;
+    }
+  }
+
+  span {
+    position: relative;
+    z-index: 1;
   }
 `;
 
 const PostsSection = styled.div`
-  display: grid;
-  gap: 1.5rem;
+  margin-top: ${theme.spacing.xl};
 `;
 
 const PostCard = styled.div`
-  background: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: ${theme.colors.surface};
+  border-radius: ${theme.radius.lg};
+  padding: ${theme.spacing.xl};
+  margin-bottom: ${theme.spacing.xl};
+  box-shadow: ${theme.shadows.sm};
+  border: 1px solid ${theme.colors.border.light};
+  transition: ${theme.transitions.default};
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: ${theme.gradients.primary};
+    opacity: 0;
+    transition: ${theme.transitions.default};
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${theme.shadows.lg};
+    border-color: ${theme.colors.border.hover};
+
+    &:before {
+      opacity: 1;
+    }
+  }
 `;
 
 const PostHeader = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: ${theme.spacing.md};
 `;
 
 const UserAvatar = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
-  margin-right: 1rem;
+  margin-right: ${theme.spacing.md};
 `;
 
 const PostInfo = styled.div`
   flex: 1;
 `;
 
-const UserName = styled.h4`
-  margin: 0;
-  color: #2d3748;
-  font-size: 1rem;
+const UserName = styled.div`
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+  margin-bottom: ${theme.spacing.sm};
 `;
 
-const PostTime = styled.span`
-  color: #718096;
+const PostTime = styled.div`
+  color: ${theme.colors.text.light};
   font-size: 0.875rem;
 `;
 
-const PostContent = styled.div`
-  margin-bottom: 1rem;
-  color: #4a5568;
+const PostContent = styled.p`
+  color: ${theme.colors.text.primary};
+  margin: ${theme.spacing.lg} 0;
+  line-height: 1.7;
+  font-size: 1.05rem;
 `;
 
 const PostImage = styled.img`
   width: 100%;
-  border-radius: 10px;
-  margin-bottom: 1rem;
+  border-radius: ${theme.radius.lg};
+  margin: ${theme.spacing.lg} 0;
+  max-height: 400px;
+  object-fit: cover;
+  box-shadow: ${theme.shadows.sm};
+  transition: ${theme.transitions.default};
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: ${theme.shadows.md};
+  }
 `;
 
 const PostActions = styled.div`
   display: flex;
-  gap: 1rem;
-  color: #718096;
-  font-size: 0.875rem;
+  gap: ${theme.spacing.md};
+  padding-top: ${theme.spacing.sm};
+  border-top: 1px solid ${theme.colors.border.light};
 `;
 
 const ActionButton = styled.button`
   background: none;
   border: none;
-  color: #718096;
-  cursor: pointer;
+  color: ${theme.colors.text.muted};
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  
+  gap: ${theme.spacing.sm};
+  cursor: pointer;
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  border-radius: ${theme.radius.md};
+  transition: ${theme.transitions.bounce};
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: ${theme.colors.overlay};
+    opacity: 0;
+    transition: ${theme.transitions.default};
+    border-radius: ${theme.radius.md};
+  }
+
   &:hover {
-    color: #FF69B4;
+    color: ${theme.colors.primary};
+    transform: translateY(-1px);
+
+    &:before {
+      opacity: 1;
+    }
+  }
+
+  span {
+    font-size: 1.2rem;
+    position: relative;
+    z-index: 1;
   }
 `;
 
 const CommentSection = styled.div`
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #edf2f7;
-`;
+  margin: ${theme.spacing.lg} -${theme.spacing.xl} -${theme.spacing.xl} -${theme.spacing.xl};
+  padding: ${theme.spacing.xl};
+  background: ${theme.colors.primaryLighter};
+  border-bottom-left-radius: ${theme.radius.lg};
+  border-bottom-right-radius: ${theme.radius.lg};
+  position: relative;
 
-const CommentInput = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-`;
-
-const CommentTextArea = styled.textarea`
-  flex: 1;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 5px;
-  resize: vertical;
-  min-height: 40px;
-  
-  &:focus {
-    outline: none;
-    border-color: #FF69B4;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: ${theme.gradients.accent};
   }
 `;
 
 const Comment = styled.div`
-  padding: 1rem;
-  border-bottom: 1px solid #edf2f7;
+  padding: ${theme.spacing.lg};
+  background: ${theme.colors.surface};
+  border-radius: ${theme.radius.md};
+  margin-bottom: ${theme.spacing.md};
+  box-shadow: ${theme.shadows.sm};
+  transition: ${theme.transitions.default};
+  border: 1px solid ${theme.colors.border.light};
   
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: ${theme.shadows.md};
+    border-color: ${theme.colors.border.hover};
+  }
+
   &:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
   }
 `;
 
 const CommentHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: ${theme.spacing.sm};
 `;
 
 const CommentAuthor = styled.span`
   font-weight: 500;
-  color: #2d3748;
+  color: ${theme.colors.text.primary};
 `;
 
 const CommentTime = styled.span`
-  color: #718096;
+  color: ${theme.colors.text.light};
   font-size: 0.875rem;
 `;
 
+const CommentTextArea = styled.textarea`
+  flex: 1;
+  padding: ${theme.spacing.md};
+  border: 2px solid ${theme.colors.border.light};
+  border-radius: ${theme.radius.md};
+  resize: vertical;
+  min-height: 40px;
+  color: ${theme.colors.text.primary};
+  background: ${theme.colors.surface};
+  transition: ${theme.transitions.default};
+  
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.primary};
+    box-shadow: ${theme.shadows.sm};
+  }
+
+  &:hover {
+    border-color: ${theme.colors.border.hover};
+  }
+`;
+
 const Button = styled.button`
-  background: #FF69B4;
+  background: ${theme.gradients.primary};
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 15px;
+  padding: ${theme.spacing.md} ${theme.spacing.xl};
+  border-radius: ${theme.radius.full};
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
+  transition: ${theme.transitions.default};
+  box-shadow: ${theme.shadows.sm};
   
   &:hover {
-    background: #FF1493;
+    transform: translateY(-2px);
+    box-shadow: ${theme.shadows.hover};
+    background: ${theme.gradients.secondary};
+  }
+
+  &:disabled {
+    background: ${theme.colors.divider};
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 `;
 
@@ -370,7 +587,7 @@ const Community = () => {
             <CommunityInfo>
               <CommunityName>{community.name}</CommunityName>
               <CommunityDescription>{community.description}</CommunityDescription>
-              <span style={{ fontSize: '0.875rem', color: '#718096' }}>
+              <span style={{ fontSize: '0.875rem', color: theme.colors.text.light }}>
                 {community.members.toLocaleString()} members
               </span>
             </CommunityInfo>
@@ -399,7 +616,7 @@ const Community = () => {
             <PostActions>
               <ActionButton 
                 onClick={() => handleLike(post.id)}
-                style={{ color: post.liked ? '#FF69B4' : '#718096' }}
+                style={{ color: post.liked ? theme.colors.primary : theme.colors.text.secondary }}
               >
                 <span>👍</span> {post.likes} Likes
               </ActionButton>
@@ -422,20 +639,18 @@ const Community = () => {
                     <div>{comment.content}</div>
                   </Comment>
                 ))}
-                <CommentInput>
-                  <CommentTextArea
-                    placeholder="Write a comment..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                  />
-                  <Button 
-                    primary 
-                    onClick={() => handleComment(post.id)}
-                    disabled={!newComment.trim()}
-                  >
-                    Post
-                  </Button>
-                </CommentInput>
+                <CommentTextArea
+                  placeholder="Write a comment..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <Button 
+                  primary 
+                  onClick={() => handleComment(post.id)}
+                  disabled={!newComment.trim()}
+                >
+                  Post
+                </Button>
               </CommentSection>
             )}
           </PostCard>

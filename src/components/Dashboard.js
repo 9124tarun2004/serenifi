@@ -133,6 +133,35 @@ const SubmitButton = styled.button`
   &:hover {
     background-color: #3182ce;
   }
+
+  &:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+  }
+`;
+
+const Notification = styled.div`
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem 2rem;
+  background-color: #48bb78;
+  color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 `;
 
 const PlansList = styled.div`
@@ -193,6 +222,7 @@ const Dashboard = () => {
   const [selectedMood, setSelectedMood] = useState(null);
   const [streak, setStreak] = useState(0);
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [showNotification, setShowNotification] = useState(false);
 
   const moods = [
     { emoji: '😊', text: 'Happy' },
@@ -236,8 +266,24 @@ const Dashboard = () => {
     return location.pathname === path;
   };
 
+  const handleMoodSubmit = () => {
+    if (selectedMood !== null) {
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 3000);
+      // Reset selected mood after submission
+      setSelectedMood(null);
+    }
+  };
+
   return (
     <Container>
+      {showNotification && (
+        <Notification>
+          Mood submitted successfully! 🎉
+        </Notification>
+      )}
       <MainContent>
         <Header>
           <Greeting>
@@ -266,7 +312,12 @@ const Dashboard = () => {
               </Emoticon>
             ))}
           </EmoticonContainer>
-          <SubmitButton>Submit</SubmitButton>
+          <SubmitButton 
+            onClick={handleMoodSubmit}
+            disabled={selectedMood === null}
+          >
+            Submit
+          </SubmitButton>
         </MoodTracker>
 
         <PlansList>

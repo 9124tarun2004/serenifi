@@ -6,16 +6,16 @@ import logo from '../assets/logo.png';
 const Container = styled.div`
   display: flex;
   min-height: 100vh;
-  background-color: #f0f2f5;
+  background-color: #f0f7ff;
 `;
 
 const Sidebar = styled.div`
   width: 240px;
-  background-color: white;
+  background-color: #ffffff;
   padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid #e1eeff;
 `;
 
 const Logo = styled.div`
@@ -35,21 +35,23 @@ const NavItem = styled.div`
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  color: ${props => props.active ? '#f6ad55' : '#4a5568'};
-  background-color: ${props => props.active ? '#fff3e3' : 'transparent'};
+  color: ${props => props.active ? '#1e40af' : '#4a5568'};
+  background-color: ${props => props.active ? '#dbeafe' : 'transparent'};
   border-radius: 0.5rem;
   cursor: pointer;
   margin-bottom: 0.5rem;
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: ${props => props.active ? '#fff3e3' : '#f7fafc'};
+    background-color: ${props => props.active ? '#dbeafe' : '#f0f7ff'};
+    color: #1e40af;
   }
 `;
 
 const MainContent = styled.div`
   flex: 1;
   overflow-y: auto;
+  background-color: #f0f7ff;
 `;
 
 const Layout = ({ children }) => {
@@ -59,6 +61,7 @@ const Layout = ({ children }) => {
   const navItems = [
     { icon: '🏠', text: 'Home', path: '/dashboard' },
     { icon: '📔', text: 'Journal', path: '/journal' },
+    { icon: '💡', text: 'Tips', path: '/tips' },
     { icon: '📊', text: 'Analytics', path: '/analytics' },
     { icon: '🎯', text: 'Challenge', path: '/challenge' },
     { icon: '🎁', text: 'Rewards', path: '/rewards' },

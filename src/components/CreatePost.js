@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { theme } from '../theme/colors';
 
 const Container = styled.div`
   padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
+  background-color: ${theme.colors.background};
 `;
 
 const Header = styled.div`
@@ -13,18 +15,21 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid ${theme.colors.border};
 
   h1 {
-    font-size: 1.5rem;
-    color: #2d3748;
+    font-size: 2rem;
+    color: ${theme.colors.text.primary};
+    font-weight: 600;
   }
 `;
 
 const Form = styled.form`
-  background: white;
-  border-radius: 10px;
+  background: ${theme.colors.surface};
+  border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px ${theme.colors.shadow};
 `;
 
 const FormGroup = styled.div`
@@ -32,8 +37,8 @@ const FormGroup = styled.div`
 
   label {
     display: block;
-    color: #4a5568;
-    margin-bottom: 0.5rem;
+    color: ${theme.colors.text.primary};
+    margin-bottom: 0.75rem;
     font-weight: 500;
   }
 `;
@@ -41,42 +46,57 @@ const FormGroup = styled.div`
 const Select = styled.select`
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 5px;
-  color: #4a5568;
+  border: 2px solid ${theme.colors.border};
+  border-radius: 8px;
+  color: ${theme.colors.text.primary};
   background-color: white;
+  transition: all 0.2s;
   
   &:focus {
     outline: none;
-    border-color: #FF69B4;
+    border-color: ${theme.colors.primary};
+  }
+
+  &:hover {
+    border-color: ${theme.colors.primary};
   }
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 5px;
-  color: #4a5568;
+  border: 2px solid ${theme.colors.border};
+  border-radius: 8px;
+  color: ${theme.colors.text.primary};
+  transition: all 0.2s;
   
   &:focus {
     outline: none;
-    border-color: #FF69B4;
+    border-color: ${theme.colors.primary};
+  }
+
+  &:hover {
+    border-color: ${theme.colors.primary};
   }
 `;
 
 const TextArea = styled.textarea`
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 5px;
+  border: 2px solid ${theme.colors.border};
+  border-radius: 8px;
   min-height: 150px;
-  color: #4a5568;
+  color: ${theme.colors.text.primary};
   resize: vertical;
+  transition: all 0.2s;
   
   &:focus {
     outline: none;
-    border-color: #FF69B4;
+    border-color: ${theme.colors.primary};
+  }
+
+  &:hover {
+    border-color: ${theme.colors.primary};
   }
 `;
 
@@ -95,20 +115,23 @@ const Button = styled.button`
   transition: all 0.2s;
   
   ${props => props.primary ? `
-    background: #FF69B4;
+    background: ${theme.gradients.primary};
     color: white;
     border: none;
     
     &:hover {
-      background: #FF1493;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px ${theme.colors.shadow};
     }
   ` : `
     background: white;
-    color: #4a5568;
-    border: 1px solid #e2e8f0;
+    color: ${theme.colors.text.primary};
+    border: 2px solid ${theme.colors.border};
     
     &:hover {
-      background: #f7fafc;
+      background: ${theme.colors.primaryLighter};
+      border-color: ${theme.colors.primary};
+      color: ${theme.colors.primary};
     }
   `}
 `;
