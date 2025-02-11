@@ -19,6 +19,7 @@ import Analytics from './components/Analytics';
 import Rewards from './components/Rewards';
 import CreatePost from './components/CreatePost';
 import Tips from './components/Tips';
+import Chatbot from './components/Chatbot';
 import { AnalyticsProvider } from './context/AnalyticsContext';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/dashboard/*" element={<Dashboard />} />
+                        <Route path="/chatbot" element={<Chatbot />} />
                         <Route path="/journal" element={<Journal />} />
                         <Route path="/music" element={<Music />} />
                         <Route path="/profile" element={<Profile />} />
