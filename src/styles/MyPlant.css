@@ -1,0 +1,186 @@
+.my-plant {
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.plant-container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.plant-naming {
+  width: 100%;
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.plant-naming h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.plant-naming form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.plant-naming input {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.plant-naming input:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+.plant-naming button {
+  padding: 12px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.plant-naming button:hover {
+  background: #45a049;
+}
+
+.plant-info {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.plant-info h2 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.stage-name {
+  color: #666;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.credits {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #4CAF50;
+  color: white;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.plant-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0;
+  min-height: 200px;
+}
+
+.plant-visual img {
+  max-width: 200px;
+  height: auto;
+  transition: transform 0.3s;
+}
+
+.plant-visual img:hover {
+  transform: scale(1.05);
+}
+
+.growth-progress {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: #666;
+  margin: 10px 0;
+}
+
+.plant-tips {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.plant-tips h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.plant-tips ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.plant-tips li {
+  padding: 8px 0;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.plant-tips li:before {
+  content: "🌱";
+  font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+  .my-plant {
+    padding: 1rem;
+  }
+
+  .plant-container {
+    padding: 1rem;
+  }
+
+  .plant-visual {
+    padding: 1rem;
+  }
+
+  .plant-visual img {
+    max-height: 200px;
+  }
+}
