@@ -51,112 +51,121 @@ const Greeting = styled.div`
   }
 `;
 
-const MoodTracker = styled.div`
-  background-color: #fff;
-  padding: 1.5rem;
+const DayStreak = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: white;
+  padding: 1rem 1.5rem;
   border-radius: 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  div {
+    text-align: center;
+  }
 
   h2 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     color: #2d3748;
-    margin-bottom: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    color: #4a5568;
+    font-size: 0.875rem;
+  }
+
+  span {
+    font-size: 1.5rem;
   }
 `;
 
+const MoodTracker = styled.div`
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+`;
+
 const EmoticonContainer = styled.div`
-  display: flex;
-  gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
   margin-bottom: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
 `;
 
 const Emoticon = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  padding: 1rem;
   cursor: pointer;
-  opacity: ${props => props.selected ? 1 : 0.6};
-  transform: ${props => props.selected ? 'scale(1.1)' : 'scale(1)'};
-  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  background-color: ${props => props.selected ? '#e2e8f0' : 'transparent'};
+
+  &:hover {
+    background-color: #e2e8f0;
+  }
 
   span {
     font-size: 2rem;
+    margin-bottom: 0.5rem;
   }
 
   p {
-    font-size: 0.875rem;
     color: #4a5568;
+    font-size: 0.875rem;
   }
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
   padding: 0.75rem;
-  background-color: #f6ad55;
+  background-color: #4299e1;
   color: white;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: #ed8936;
-  }
-`;
-
-const DayStreak = styled.div`
-  background-color: white;
-  padding: 1rem;
-  border-radius: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-
-  h2 {
-    font-size: 2rem;
-    color: #2d3748;
-    margin: 0;
-  }
-
-  p {
-    color: #4a5568;
-    margin: 0;
-  }
-
-  span {
-    font-size: 2rem;
+    background-color: #3182ce;
   }
 `;
 
 const PlansList = styled.div`
-  margin-top: 2rem;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
   h2 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     color: #2d3748;
     margin-bottom: 1rem;
   }
 `;
 
 const PlanItem = styled.div`
-  background-color: white;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  padding: 1rem;
   cursor: pointer;
-  transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  opacity: ${props => props.completed ? 0.7 : 1};
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  background-color: ${props => props.completed ? '#f7fafc' : 'white'};
+  border: 1px solid #e2e8f0;
+  margin-bottom: 0.5rem;
 
   &:hover {
-    transform: translateX(5px);
+    background-color: #f7fafc;
+  }
+
+  span {
+    font-size: 1.5rem;
   }
 
   .plan-content {
@@ -164,18 +173,17 @@ const PlanItem = styled.div`
   }
 
   .plan-title {
-    font-weight: 500;
     color: #2d3748;
-    text-decoration: ${props => props.completed ? 'line-through' : 'none'};
+    margin-bottom: 0.25rem;
   }
 
   .plan-duration {
+    color: #4a5568;
     font-size: 0.875rem;
-    color: #718096;
   }
 
   .completion-indicator {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 `;
 
@@ -194,7 +202,6 @@ const Dashboard = () => {
     { emoji: '😃', text: 'Excited' },
     { emoji: '😐', text: 'Neutral' }
   ];
-
 
   const plans = [
     { icon: '🧘‍♀️', text: 'Meditation', duration: '20 min' },
@@ -231,7 +238,6 @@ const Dashboard = () => {
 
   return (
     <Container>
-
       <MainContent>
         <Header>
           <Greeting>

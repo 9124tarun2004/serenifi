@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import logo from '../assets/logo.png';
 
 const Container = styled.div`
   display: flex;
@@ -19,13 +20,13 @@ const Sidebar = styled.div`
 
 const Logo = styled.div`
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
+  gap: 1rem;
+  padding: 1rem;
+  margin-left: 3px;
   margin-bottom: 2rem;
   img {
-    width: 40px;
-    height: 40px;
+    width: 120px;
+    height: 120px;
   }
 `;
 
@@ -89,8 +90,7 @@ const Layout = ({ children }) => {
     <Container>
       <Sidebar>
         <Logo>
-          <img src="https://img.icons8.com/color/96/000000/meditation-guru.png" alt="logo" />
-          <span>Serenifi</span>
+          <img src={logo} alt="Serinifi logo" />
         </Logo>
         {navItems.map((item, index) => (
           <NavItem

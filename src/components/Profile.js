@@ -1,5 +1,128 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import styled from 'styled-components';
 import '../styles/Profile.css';
+
+const Container = styled.div`
+  display: flex;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  padding: 2rem;
+`;
+
+const ProfileContainer = styled.div`
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+`;
+
+const Title = styled.h1`
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+`;
+
+const Card = styled.div`
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+`;
+
+const PhotoSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+`;
+
+const PhotoContainer = styled.div`
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 1rem;
+`;
+
+const ProfilePhoto = styled.div`
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-color: ${props => props.hasImage ? 'transparent' : '#e2e8f0'};
+  background-image: ${props => props.hasImage ? `url(${props.image})` : 'none'};
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #a0aec0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const UploadButton = styled.button`
+  background: #f6ad55;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #ed8936;
+  }
+`;
+
+const HiddenInput = styled.input`
+  display: none;
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+const Label = styled.label`
+  display: block;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #2d3748;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #f6ad55;
+  }
+`;
+
+const SaveButton = styled.button`
+  background: #f6ad55;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #ed8936;
+  }
+`;
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -43,6 +166,9 @@ const Profile = () => {
   const [formData, setFormData] = useState(profile);
   const [activeTab, setActiveTab] = useState('basic');
   const [showMoodPicker, setShowMoodPicker] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+
+  const fileInputRef = useRef(null);
 
   const moods = [
     { emoji: '😊', name: 'Happy' },
@@ -60,6 +186,21 @@ const Profile = () => {
       setFormData(JSON.parse(savedProfile));
     }
   }, []);
+
+  const handlePhotoClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handlePhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -292,77 +433,59 @@ const Profile = () => {
     </div>
   );
 
+  const renderPhotoSection = () => (
+    <PhotoSection>
+      <PhotoContainer>
+        <ProfilePhoto 
+          hasImage={!!profileImage} 
+          image={profileImage}
+          onClick={handlePhotoClick}
+        >
+          {!profileImage && '👤'}
+        </ProfilePhoto>
+      </PhotoContainer>
+      <UploadButton type="button" onClick={handlePhotoClick}>
+        Upload Photo
+      </UploadButton>
+      <HiddenInput
+        type="file"
+        ref={fileInputRef}
+        onChange={handlePhotoChange}
+        accept="image/*"
+      />
+    </PhotoSection>
+  );
+
   return (
-    <div className="profile-container">
-      <div className="profile-header">
-        <div className="avatar-container">
-          <img
-            src={profile.avatar}
-            alt="Profile"
-            className="profile-avatar"
-          />
-          {isEditing && (
-            <button className="edit-avatar-button">
-              📷
-            </button>
-          )}
-        </div>
-        {!isEditing && (
-          <button className="edit-button" onClick={handleEditClick}>
-            ✏️
-          </button>
-        )}
-      </div>
+    <Container>
+      <ProfileContainer>
+        <Title>Edit Profile</Title>
+        <Card>
+          <form onSubmit={handleSubmit}>
+            {renderPhotoSection()}
+            {activeTab === 'basic' && renderBasicInfo()}
+            {activeTab === 'bio' && renderBioSection()}
+            {activeTab === 'mood' && renderMoodTracker()}
+            {activeTab === 'achievements' && renderAchievements()}
 
-      <div className="profile-tabs">
-        <button
-          className={`tab-button ${activeTab === 'basic' ? 'active' : ''}`}
-          onClick={() => setActiveTab('basic')}
-        >
-          Basic Info
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'bio' ? 'active' : ''}`}
-          onClick={() => setActiveTab('bio')}
-        >
-          About Me
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'mood' ? 'active' : ''}`}
-          onClick={() => setActiveTab('mood')}
-        >
-          Mood Tracker
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'achievements' ? 'active' : ''}`}
-          onClick={() => setActiveTab('achievements')}
-        >
-          Achievements
-        </button>
-      </div>
-
-      <form className="profile-form" onSubmit={handleSubmit}>
-        {activeTab === 'basic' && renderBasicInfo()}
-        {activeTab === 'bio' && renderBioSection()}
-        {activeTab === 'mood' && renderMoodTracker()}
-        {activeTab === 'achievements' && renderAchievements()}
-
-        {isEditing && (
-          <div className="button-group">
-            <button type="submit" className="save-button">
-              Save Changes
-            </button>
-            <button
-              type="button"
-              className="cancel-button"
-              onClick={() => setIsEditing(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        )}
-      </form>
-    </div>
+            {isEditing && (
+              <div className="button-group">
+                <SaveButton type="submit">
+                  Save Changes
+                </SaveButton>
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={() => setIsEditing(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </form>
+        </Card>
+      </ProfileContainer>
+    </Container>
   );
 };
 

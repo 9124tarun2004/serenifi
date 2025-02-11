@@ -1,403 +1,446 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
-  display: flex;
-  min-height: 100vh;
-  background-color: #f0f2f5;
   padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
-const Title = styled.h1`
-  font-size: 1.5rem;
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+`;
+
+const CreatePostButton = styled.button`
+  background: #FF69B4;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &:hover {
+    background: #FF1493;
+  }
+`;
+
+const CommunitiesSection = styled.div`
+  background: white;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+`;
+
+const CommunityCard = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #edf2f7;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const CommunityIcon = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  margin-right: 1rem;
+`;
+
+const CommunityInfo = styled.div`
+  flex: 1;
+`;
+
+const CommunityName = styled.h3`
+  margin: 0;
   color: #2d3748;
-  margin-bottom: 1.5rem;
+  font-size: 1rem;
+`;
+
+const CommunityDescription = styled.p`
+  margin: 0.25rem 0 0;
+  color: #718096;
+  font-size: 0.875rem;
+`;
+
+const JoinButton = styled.button`
+  background: ${props => props.joined ? '#E2E8F0' : '#FF69B4'};
+  color: ${props => props.joined ? '#4A5568' : 'white'};
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: 500;
+  
+  &:hover {
+    background: ${props => props.joined ? '#CBD5E0' : '#FF1493'};
+  }
+`;
+
+const PostsSection = styled.div`
+  display: grid;
+  gap: 1.5rem;
 `;
 
 const PostCard = styled.div`
   background: white;
   border-radius: 10px;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
-const UserInfo = styled.div`
+const PostHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
   margin-bottom: 1rem;
 `;
 
-const Avatar = styled.div`
+const UserAvatar = styled.img`
   width: 40px;
   height: 40px;
-  border-radius: 20px;
-  background-color: #edf2f7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
+  border-radius: 50%;
+  margin-right: 1rem;
 `;
 
-const CreatePost = styled.div`
-  background: white;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1.5rem;
+const PostInfo = styled.div`
+  flex: 1;
 `;
 
-const TextArea = styled.textarea`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 5px;
-  margin: 1rem 0;
-  min-height: ${props => props.small ? '60px' : '100px'};
-  resize: vertical;
-
-  &:focus {
-    outline: none;
-    border-color: #f6ad55;
-  }
+const UserName = styled.h4`
+  margin: 0;
+  color: #2d3748;
+  font-size: 1rem;
 `;
 
-const Button = styled.button`
-  background: #f6ad55;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background: #ed8936;
-  }
-
-  &:disabled {
-    background: #cbd5e0;
-    cursor: not-allowed;
-  }
+const PostTime = styled.span`
+  color: #718096;
+  font-size: 0.875rem;
 `;
 
-const InteractionButton = styled.button`
-  background: transparent;
-  border: none;
+const PostContent = styled.div`
+  margin-bottom: 1rem;
   color: #4a5568;
-  padding: 0.5rem 1rem;
+`;
+
+const PostImage = styled.img`
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+`;
+
+const PostActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  color: #718096;
+  font-size: 0.875rem;
+`;
+
+const ActionButton = styled.button`
+  background: none;
+  border: none;
+  color: #718096;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
+  
   &:hover {
-    color: #f6ad55;
+    color: #FF69B4;
   }
-
-  ${props => props.active && `
-    color: #f6ad55;
-  `}
 `;
 
 const CommentSection = styled.div`
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #edf2f7;
+`;
+
+const CommentInput = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+`;
+
+const CommentTextArea = styled.textarea`
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  resize: vertical;
+  min-height: 40px;
+  
+  &:focus {
+    outline: none;
+    border-color: #FF69B4;
+  }
 `;
 
 const Comment = styled.div`
-  margin: 1rem 0;
   padding: 1rem;
-  background: #f8fafc;
-  border-radius: 8px;
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-  }
-
-  .user {
-    font-weight: 500;
-    color: #2d3748;
-  }
-
-  .time {
-    font-size: 0.75rem;
-    color: #718096;
-  }
-
-  .content {
-    color: #4a5568;
+  border-bottom: 1px solid #edf2f7;
+  
+  &:last-child {
+    border-bottom: none;
   }
 `;
 
-const TagInput = styled.div`
+const CommentHeader = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 0.5rem 0;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+`;
 
-  .tag {
-    background: #edf2f7;
-    padding: 0.25rem 0.75rem;
-    border-radius: 15px;
-    font-size: 0.875rem;
-    color: #4a5568;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+const CommentAuthor = styled.span`
+  font-weight: 500;
+  color: #2d3748;
+`;
 
-    button {
-      background: none;
-      border: none;
-      color: #718096;
-      cursor: pointer;
-      padding: 0;
-      font-size: 1rem;
+const CommentTime = styled.span`
+  color: #718096;
+  font-size: 0.875rem;
+`;
 
-      &:hover {
-        color: #e53e3e;
-      }
-    }
-  }
-
-  input {
-    border: none;
-    outline: none;
-    padding: 0.25rem;
-    font-size: 0.875rem;
-
-    &::placeholder {
-      color: #a0aec0;
-    }
+const Button = styled.button`
+  background: #FF69B4;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: 500;
+  
+  &:hover {
+    background: #FF1493;
   }
 `;
 
 const Community = () => {
-  const [posts, setPosts] = useState([
+  const navigate = useNavigate();
+  const [communities, setCommunities] = useState([
     {
       id: 1,
-      user: 'Sarah M.',
-      avatar: '👩',
-      content: 'Just completed a 30-minute meditation session! Feeling so peaceful and centered. 🧘‍♀️✨',
-      likes: 12,
-      likedBy: [],
-      comments: [
-        {
-          id: 1,
-          user: 'Mike R.',
-          content: 'That\'s amazing! Keep it up! 🎉',
-          time: '1 hour ago'
-        }
-      ],
-      tags: ['meditation', 'mindfulness'],
-      time: '2 hours ago'
+      name: 'Meditation Circle',
+      description: 'Mindfulness practices and meditation discussions',
+      members: 2530,
+      icon: 'https://via.placeholder.com/50',
+      joined: false
     },
     {
       id: 2,
-      user: 'Mike R.',
-      avatar: '👨',
-      content: 'Looking for meditation buddies! Anyone interested in doing daily morning sessions together? 🌅',
-      likes: 8,
-      likedBy: [],
-      comments: [],
-      tags: ['meditation', 'community'],
-      time: '4 hours ago'
+      name: 'ADHD Support',
+      description: 'Support group for adults with ADHD',
+      members: 1845,
+      icon: 'https://via.placeholder.com/50',
+      joined: true
+    },
+    {
+      id: 3,
+      name: 'Anxiety Relief',
+      description: 'Coping strategies and support for anxiety',
+      members: 2120,
+      icon: 'https://via.placeholder.com/50',
+      joined: false
     }
   ]);
 
-  const [newPost, setNewPost] = useState('');
-  const [newTags, setNewTags] = useState([]);
-  const [tagInput, setTagInput] = useState('');
-  const [commentInputs, setCommentInputs] = useState({});
-  const [showComments, setShowComments] = useState({});
-
-  const handlePost = () => {
-    if (newPost.trim()) {
-      const post = {
-        id: Date.now(),
-        user: 'You',
-        avatar: '👤',
-        content: newPost,
-        likes: 0,
-        likedBy: [],
-        comments: [],
-        tags: newTags,
-        time: 'Just now'
-      };
-      setPosts([post, ...posts]);
-      setNewPost('');
-      setNewTags([]);
-      setTagInput('');
+  const [posts, setPosts] = useState([
+    {
+      id: 1,
+      user: {
+        name: 'Sarah Johnson',
+        avatar: 'https://via.placeholder.com/40'
+      },
+      time: '2 hours ago',
+      content: 'Just completed my 30-day mindfulness challenge! The journey has been incredible, and I\'ve noticed significant improvements in my mental well-being. Remember, small steps lead to big changes! 🧘‍♀️ #MentalHealth #Mindfulness',
+      image: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+      likes: 42,
+      liked: false,
+      comments: [
+        {
+          id: 1,
+          user: 'John Doe',
+          content: 'This is amazing! Keep up the great work! 🎉',
+          time: '1 hour ago'
+        }
+      ],
+      showComments: false
     }
-  };
+  ]);
 
-  const handleAddTag = (e) => {
-    if (e.key === 'Enter' && tagInput.trim() && !newTags.includes(tagInput.trim())) {
-      setNewTags([...newTags, tagInput.trim()]);
-      setTagInput('');
+  const [newComment, setNewComment] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState(null);
+
+  useEffect(() => {
+    // Load posts from localStorage if any
+    const savedPosts = localStorage.getItem('communityPosts');
+    if (savedPosts) {
+      setPosts(prev => [...JSON.parse(savedPosts), ...prev]);
     }
-  };
+  }, []);
 
-  const removeTag = (tagToRemove) => {
-    setNewTags(newTags.filter(tag => tag !== tagToRemove));
+  const handleJoinCommunity = (communityId) => {
+    setCommunities(communities.map(community => {
+      if (community.id === communityId) {
+        const newJoinedStatus = !community.joined;
+        return {
+          ...community,
+          joined: newJoinedStatus,
+          members: newJoinedStatus ? community.members + 1 : community.members - 1
+        };
+      }
+      return community;
+    }));
   };
 
   const handleLike = (postId) => {
     setPosts(posts.map(post => {
       if (post.id === postId) {
-        const isLiked = post.likedBy.includes('You');
+        const newLikedStatus = !post.liked;
         return {
           ...post,
-          likes: isLiked ? post.likes - 1 : post.likes + 1,
-          likedBy: isLiked 
-            ? post.likedBy.filter(user => user !== 'You')
-            : [...post.likedBy, 'You']
+          liked: newLikedStatus,
+          likes: newLikedStatus ? post.likes + 1 : post.likes - 1
         };
       }
       return post;
     }));
   };
 
-  const handleComment = (postId) => {
-    const comment = commentInputs[postId];
-    if (comment?.trim()) {
-      setPosts(posts.map(post => {
-        if (post.id === postId) {
-          return {
-            ...post,
-            comments: [...post.comments, {
-              id: Date.now(),
-              user: 'You',
-              content: comment,
-              time: 'Just now'
-            }]
-          };
-        }
-        return post;
-      }));
-      setCommentInputs({ ...commentInputs, [postId]: '' });
-    }
+  const toggleComments = (postId) => {
+    setPosts(posts.map(post => {
+      if (post.id === postId) {
+        return { ...post, showComments: !post.showComments };
+      }
+      return post;
+    }));
+    setSelectedPostId(postId);
   };
 
-  const toggleComments = (postId) => {
-    setShowComments({ ...showComments, [postId]: !showComments[postId] });
+  const handleComment = (postId) => {
+    if (!newComment.trim()) return;
+
+    setPosts(posts.map(post => {
+      if (post.id === postId) {
+        const newCommentObj = {
+          id: Date.now(),
+          user: 'You',
+          content: newComment,
+          time: 'Just now'
+        };
+        return {
+          ...post,
+          comments: [...post.comments, newCommentObj]
+        };
+      }
+      return post;
+    }));
+
+    setNewComment('');
+  };
+
+  const handleCreatePost = () => {
+    navigate('/create-post');
   };
 
   return (
     <Container>
-      <div style={{ width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-        <Title>Community</Title>
+      <Header>
+        <h1>Community</h1>
+        <CreatePostButton onClick={handleCreatePost}>
+          <span>+</span> Create Post
+        </CreatePostButton>
+      </Header>
 
-        <CreatePost>
-          <UserInfo>
-            <Avatar>👤</Avatar>
-            <div>
-              <p style={{ color: '#2d3748', fontWeight: '500' }}>Share your thoughts</p>
-            </div>
-          </UserInfo>
-          <TextArea
-            placeholder="What's on your mind?"
-            value={newPost}
-            onChange={(e) => setNewPost(e.target.value)}
-          />
-          <TagInput>
-            {newTags.map(tag => (
-              <span key={tag} className="tag">
-                #{tag}
-                <button onClick={() => removeTag(tag)}>&times;</button>
+      <CommunitiesSection>
+        <h2>Communities</h2>
+        {communities.map(community => (
+          <CommunityCard key={community.id}>
+            <CommunityIcon src={community.icon} alt={community.name} />
+            <CommunityInfo>
+              <CommunityName>{community.name}</CommunityName>
+              <CommunityDescription>{community.description}</CommunityDescription>
+              <span style={{ fontSize: '0.875rem', color: '#718096' }}>
+                {community.members.toLocaleString()} members
               </span>
-            ))}
-            <input
-              type="text"
-              placeholder="Add tags... (press Enter)"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={handleAddTag}
-            />
-          </TagInput>
-          <div style={{ textAlign: 'right' }}>
-            <Button onClick={handlePost} disabled={!newPost.trim()}>Post</Button>
-          </div>
-        </CreatePost>
+            </CommunityInfo>
+            <JoinButton 
+              joined={community.joined}
+              onClick={() => handleJoinCommunity(community.id)}
+            >
+              {community.joined ? 'Joined' : 'Join'}
+            </JoinButton>
+          </CommunityCard>
+        ))}
+      </CommunitiesSection>
 
+      <PostsSection>
         {posts.map(post => (
           <PostCard key={post.id}>
-            <UserInfo>
-              <Avatar>{post.avatar}</Avatar>
-              <div>
-                <p style={{ color: '#2d3748', fontWeight: '500' }}>{post.user}</p>
-                <p style={{ color: '#718096', fontSize: '0.875rem' }}>{post.time}</p>
-              </div>
-            </UserInfo>
-            
-            <p style={{ color: '#4a5568', marginBottom: '1rem' }}>{post.content}</p>
-            
-            {post.tags.length > 0 && (
-              <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                {post.tags.map(tag => (
-                  <span key={tag} style={{ 
-                    color: '#718096',
-                    fontSize: '0.875rem'
-                  }}>
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-            
-            <div style={{ display: 'flex', gap: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
-              <InteractionButton 
+            <PostHeader>
+              <UserAvatar src={post.user.avatar} alt={post.user.name} />
+              <PostInfo>
+                <UserName>{post.user.name}</UserName>
+                <PostTime>{post.time}</PostTime>
+              </PostInfo>
+            </PostHeader>
+            <PostContent>{post.content}</PostContent>
+            {post.image && <PostImage src={post.image} alt="Post" />}
+            <PostActions>
+              <ActionButton 
                 onClick={() => handleLike(post.id)}
-                active={post.likedBy.includes('You')}
+                style={{ color: post.liked ? '#FF69B4' : '#718096' }}
               >
-                ❤️ {post.likes}
-              </InteractionButton>
-              <InteractionButton onClick={() => toggleComments(post.id)}>
-                💬 {post.comments.length}
-              </InteractionButton>
-              <InteractionButton>
-                ↗️ Share
-              </InteractionButton>
-            </div>
+                <span>👍</span> {post.likes} Likes
+              </ActionButton>
+              <ActionButton onClick={() => toggleComments(post.id)}>
+                <span>💭</span> {post.comments.length} Comments
+              </ActionButton>
+              <ActionButton>
+                <span>↗️</span> Share
+              </ActionButton>
+            </PostActions>
 
-            {showComments[post.id] && (
+            {post.showComments && (
               <CommentSection>
                 {post.comments.map(comment => (
                   <Comment key={comment.id}>
-                    <div className="header">
-                      <span className="user">{comment.user}</span>
-                      <span className="time">{comment.time}</span>
-                    </div>
-                    <p className="content">{comment.content}</p>
+                    <CommentHeader>
+                      <CommentAuthor>{comment.user}</CommentAuthor>
+                      <CommentTime>{comment.time}</CommentTime>
+                    </CommentHeader>
+                    <div>{comment.content}</div>
                   </Comment>
                 ))}
-                
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                  <TextArea
-                    small
+                <CommentInput>
+                  <CommentTextArea
                     placeholder="Write a comment..."
-                    value={commentInputs[post.id] || ''}
-                    onChange={(e) => setCommentInputs({
-                      ...commentInputs,
-                      [post.id]: e.target.value
-                    })}
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
                   />
                   <Button 
+                    primary 
                     onClick={() => handleComment(post.id)}
-                    disabled={!commentInputs[post.id]?.trim()}
+                    disabled={!newComment.trim()}
                   >
-                    Comment
+                    Post
                   </Button>
-                </div>
+                </CommentInput>
               </CommentSection>
             )}
           </PostCard>
         ))}
-      </div>
+      </PostsSection>
     </Container>
   );
 };
