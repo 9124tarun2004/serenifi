@@ -112,7 +112,7 @@ const Toggle = styled.label`
   }
 
   input:checked + span {
-    background-color: #f6ad55;
+    background-color: #007bff;
   }
 
   input:checked + span:before {

@@ -43,7 +43,7 @@ const Title = styled.h1`
     transform: translateX(-50%);
     width: 60%;
     height: 4px;
-    background: linear-gradient(90deg, #f6ad55, #ed8936);
+    background: linear-gradient(90deg, #007bff, #0056b3);
     border-radius: 2px;
   }
 `;
@@ -139,7 +139,7 @@ const RewardIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${props => props.locked ? '#f7fafc' : 'linear-gradient(135deg, #ffd1c1 0%, #ffa69e 100%)'};
+  background: ${props => props.locked ? '#f7fafc' : 'linear-gradient(135deg, #e3f2ff 0%, #007bff 100%)'};
   border-radius: 50%;
   animation: ${props => props.spinning ? css`${rotate}` : css`${float}`} ${props => props.spinning ? '5s' : '3s'} infinite ${props => props.spinning ? 'linear' : 'ease-in-out'};
 `;
@@ -170,7 +170,7 @@ const ProgressBar = styled.div`
 const Progress = styled.div`
   width: ${props => props.progress}%;
   height: 100%;
-  background: linear-gradient(90deg, #f6ad55, #ed8936);
+  background: linear-gradient(90deg, #007bff, #0056b3);
   border-radius: 4px;
   transition: width 0.3s ease;
 `;
@@ -182,7 +182,7 @@ const PointsRequired = styled.div`
 `;
 
 const RedeemButton = styled.button`
-  background: ${props => props.disabled ? '#cbd5e0' : 'linear-gradient(90deg, #f6ad55, #ed8936)'};
+  background: ${props => props.disabled ? '#cbd5e0' : 'linear-gradient(90deg, #007bff, #0056b3)'};
   color: white;
   border: none;
   padding: 0.75rem 2rem;

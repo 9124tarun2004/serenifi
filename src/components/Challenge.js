@@ -39,7 +39,7 @@ const ProgressBar = styled.div`
 const Progress = styled.div`
   width: ${props => props.progress}%;
   height: 100%;
-  background-color: #f6ad55;
+  background-color: #007bff;
   border-radius: 4px;
   transition: width 0.3s ease;
 `;
@@ -80,7 +80,7 @@ const Challenge = () => {
               </div>
               <div style={{ textAlign: 'right' }}>
                 <span style={{ 
-                  background: '#f6ad55', 
+                  background: '#007bff', 
                   color: 'white', 
                   padding: '0.5rem 1rem', 
                   borderRadius: '20px',

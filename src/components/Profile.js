@@ -64,7 +64,7 @@ const ProfilePhoto = styled.div`
 `;
 
 const UploadButton = styled.button`
-  background: #f6ad55;
+  background: #007bff;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -74,7 +74,7 @@ const UploadButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background: #ed8936;
+    background: #0056b3;
   }
 `;
 
@@ -104,12 +104,12 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #f6ad55;
+    border-color: #007bff;
   }
 `;
 
 const SaveButton = styled.button`
-  background: #f6ad55;
+  background: #007bff;
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -120,7 +120,44 @@ const SaveButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background: #ed8936;
+    background: #0056b3;
+  }
+`;
+
+const EditButton = styled.button`
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+  margin-bottom: 1rem;
+
+  &:hover {
+    background: #0056b3;
+  }
+`;
+
+const TabContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+`;
+
+const TabButton = styled.button`
+  background: ${props => props.active ? '#007bff' : 'transparent'};
+  color: ${props => props.active ? 'white' : '#4a5568'};
+  border: 1px solid ${props => props.active ? '#007bff' : '#e2e8f0'};
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${props => props.active ? '#0056b3' : '#f7fafc'};
   }
 `;
 
@@ -197,6 +234,10 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result);
+        setFormData(prev => ({
+          ...prev,
+          avatar: reader.result
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -240,14 +281,18 @@ const Profile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setProfile(formData);
-    localStorage.setItem('userProfile', JSON.stringify(formData));
+    const updatedProfile = { ...formData };
+    if (profileImage) {
+      updatedProfile.avatar = profileImage;
+    }
+    setProfile(updatedProfile);
+    localStorage.setItem('userProfile', JSON.stringify(updatedProfile));
     setIsEditing(false);
   };
 
   const handleEditClick = () => {
     setIsEditing(true);
-    setFormData(profile);
+    setFormData({ ...profile });
   };
 
   const renderBasicInfo = () => (
@@ -256,10 +301,10 @@ const Profile = () => {
       <div className="form-grid">
         <div className="form-group">
           <label>First Name</label>
-          <input
+          <Input
             type="text"
             name="firstName"
-            value={isEditing ? formData.firstName : profile.firstName}
+            value={formData.firstName}
             onChange={handleInputChange}
             disabled={!isEditing}
           />
@@ -267,10 +312,10 @@ const Profile = () => {
 
         <div className="form-group">
           <label>Last Name</label>
-          <input
+          <Input
             type="text"
             name="lastName"
-            value={isEditing ? formData.lastName : profile.lastName}
+            value={formData.lastName}
             onChange={handleInputChange}
             disabled={!isEditing}
           />
@@ -278,10 +323,10 @@ const Profile = () => {
 
         <div className="form-group">
           <label>Email</label>
-          <input
+          <Input
             type="email"
             name="email"
-            value={isEditing ? formData.email : profile.email}
+            value={formData.email}
             onChange={handleInputChange}
             disabled={!isEditing}
           />
@@ -290,10 +335,10 @@ const Profile = () => {
 
         <div className="form-group">
           <label>Phone</label>
-          <input
+          <Input
             type="tel"
             name="phone"
-            value={isEditing ? formData.phone : profile.phone}
+            value={formData.phone}
             onChange={handleInputChange}
             disabled={!isEditing}
           />
@@ -301,10 +346,10 @@ const Profile = () => {
 
         <div className="form-group">
           <label>Date of Birth</label>
-          <input
+          <Input
             type="date"
             name="dateOfBirth"
-            value={isEditing ? formData.dateOfBirth : profile.dateOfBirth}
+            value={formData.dateOfBirth}
             onChange={handleInputChange}
             disabled={!isEditing}
           />
@@ -312,10 +357,10 @@ const Profile = () => {
 
         <div className="form-group">
           <label>Gender</label>
-          <input
+          <Input
             type="text"
             name="gender"
-            value={isEditing ? formData.gender : profile.gender}
+            value={formData.gender}
             onChange={handleInputChange}
             disabled={!isEditing}
           />
@@ -329,21 +374,22 @@ const Profile = () => {
       <h3>About Me</h3>
       <div className="form-group">
         <label>Bio</label>
-        <textarea
+        <Input
+          as="textarea"
           name="bio"
-          value={isEditing ? formData.bio : profile.bio}
+          value={formData.bio}
           onChange={handleInputChange}
           disabled={!isEditing}
-          rows="4"
+          style={{ height: '100px' }}
         />
       </div>
 
       <div className="form-group">
         <label>Occupation</label>
-        <input
+        <Input
           type="text"
           name="occupation"
-          value={isEditing ? formData.occupation : profile.occupation}
+          value={formData.occupation}
           onChange={handleInputChange}
           disabled={!isEditing}
         />
@@ -351,18 +397,29 @@ const Profile = () => {
 
       <div className="form-group">
         <label>Interests</label>
-        <div className="interests-container">
+        <div className="interests-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
           {['Meditation', 'Yoga', 'Reading', 'Music', 'Art', 'Nature', 'Exercise', 'Cooking'].map(interest => (
-            <label key={interest} className="interest-chip">
+            <label
+              key={interest}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '0.25rem 0.75rem',
+                borderRadius: '15px',
+                border: '1px solid #e2e8f0',
+                background: formData.interests.includes(interest) ? '#007bff' : 'white',
+                color: formData.interests.includes(interest) ? 'white' : '#4a5568',
+                cursor: isEditing ? 'pointer' : 'default'
+              }}
+            >
               <input
                 type="checkbox"
+                style={{ display: 'none' }}
                 checked={formData.interests.includes(interest)}
-                onChange={() => handleInterestChange(interest)}
+                onChange={() => isEditing && handleInterestChange(interest)}
                 disabled={!isEditing}
               />
-              <span className={formData.interests.includes(interest) ? 'selected' : ''}>
-                {interest}
-              </span>
+              {interest}
             </label>
           ))}
         </div>
@@ -459,7 +516,28 @@ const Profile = () => {
   return (
     <Container>
       <ProfileContainer>
-        <Title>Edit Profile</Title>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <Title>My Profile</Title>
+          <EditButton onClick={() => setIsEditing(!isEditing)}>
+            {isEditing ? 'Cancel Editing' : 'Edit Profile'}
+          </EditButton>
+        </div>
+
+        <TabContainer>
+          <TabButton active={activeTab === 'basic'} onClick={() => setActiveTab('basic')}>
+            Basic Info
+          </TabButton>
+          <TabButton active={activeTab === 'bio'} onClick={() => setActiveTab('bio')}>
+            About Me
+          </TabButton>
+          <TabButton active={activeTab === 'mood'} onClick={() => setActiveTab('mood')}>
+            Mood Tracker
+          </TabButton>
+          <TabButton active={activeTab === 'achievements'} onClick={() => setActiveTab('achievements')}>
+            Achievements
+          </TabButton>
+        </TabContainer>
+
         <Card>
           <form onSubmit={handleSubmit}>
             {renderPhotoSection()}
@@ -469,17 +547,24 @@ const Profile = () => {
             {activeTab === 'achievements' && renderAchievements()}
 
             {isEditing && (
-              <div className="button-group">
-                <SaveButton type="submit">
-                  Save Changes
-                </SaveButton>
+              <div className="button-group" style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
                 <button
                   type="button"
                   className="cancel-button"
                   onClick={() => setIsEditing(false)}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    borderRadius: '5px',
+                    border: '1px solid #e2e8f0',
+                    background: 'white',
+                    cursor: 'pointer'
+                  }}
                 >
                   Cancel
                 </button>
+                <SaveButton type="submit">
+                  Save Changes
+                </SaveButton>
               </div>
             )}
           </form>
