@@ -235,7 +235,7 @@ const Dashboard = () => {
 
   const plans = [
     { icon: '🧘‍♀️', text: 'Meditation', duration: '20 min' },
-    { icon: '📝', text: 'Journaling', duration: 'Write about your day' },
+    { icon: '📝', text: 'JoJ', duration: 'Write about your day' },
     { icon: '🏃‍♂️', text: 'Exercise', duration: '30 min' },
     { icon: '🎵', text: 'Music', duration: '15 min' },
     { icon: '🙏', text: 'Gratitude Reflection', duration: 'List 3 things you\'re grateful for' },
